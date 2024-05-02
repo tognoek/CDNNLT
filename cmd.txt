@@ -1,0 +1,7 @@
+docker network inspect my_network
+
+docker build -t my_mysql_image .
+docker run -d -p 6603:3306 --name my_mysql_container --network my_network my_mysql_image
+
+docker build -t my_image_name .
+docker run --name my_python_container --network my_network -d my_image_name
