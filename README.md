@@ -3,4 +3,4 @@
     docker-compose up -d
 ```
 > [!NOTE]
-> Nhớ vài docker trước nha
+> Nhớ cài docker trước nha
