@@ -5,6 +5,8 @@ import time
 from datetime import datetime
 import threading
 import configparser
+import json
+from bs4 import BeautifulSoup # type: ignore
 
 # Khởi tạo một đối tượng ConfigParser
 config = configparser.ConfigParser()
@@ -23,20 +25,18 @@ app.add_middleware(
 tognoek = False
 
 url_real = "http://db_api:8000"
-if tognoek:
-    # Url real
-    url_hot_destination = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/hotdestination.json"
-    url_list_tour = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/list_tour.json"
-    url_list_tour_all = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/list_tour_all.json"
+# Url real
+url_hot_destination = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/hotdestination.json"
+url_list_tour = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/list_tour.json"
+url_list_tour_all = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/list_tour_all.json"
 
 # key
 apikey = "f089459c644a010d87fbc5c9452db869e2fb250d"
 
-if not tognoek:
-    # api fake
-    url_hot_destination = "http://api_fake:8020/hot_destination"
-    url_list_tour = "http://api_fake:8020/list_tour"
-    url_list_tour_all = "http://api_fake:8020/list_tour_all"
+# api fake
+url_hot_destination_fake = "http://api_fake:8020/hot_destination"
+url_list_tour_fake = "http://api_fake:8020/list_tour"
+url_list_tour_all_fake = "http://api_fake:8020/list_tour_all"
 
 
 # Lấy thời gian cào dữ liệu
@@ -64,7 +64,6 @@ def call_api_hot_destination(data):
         "type": item["type"],
         "count": item["count"]
         }
-
         # Gửi yêu cầu POST đến API
         response = requests.post(url, json=data_payload)
         if response.status_code == 200:
@@ -85,12 +84,10 @@ def call_api_list_tour(data):
             "type": item["type"],
             "count": item["count"]
         }
-
         try:
             # Gửi yêu cầu POST đến API
             response = requests.post(url, json=data_payload)
             response.raise_for_status()  
-            
             # In ra thông báo nếu thành công
             print("Gửi yêu cầu thành công")
         except requests.HTTPError as e:
@@ -132,6 +129,7 @@ def crawl(url):
     response = requests.get(url)
     if response.status_code == 200: # Kiểm tra kết quả trả 200 - OK
         json_data = response.json()
+        print("Sử dụng: " + url)
         return json_data
     else:
         return None
@@ -140,14 +138,87 @@ def crawl_by_zenrows(url):
         "url": url,
         "apikey": apikey,
     }
-    response = requests.get("https://api.zenrows.com/v1/", params=params)
-    return response.json()
+    if tognoek:
+        response = requests.get("https://api.zenrows.com/v1/", params=params)
+        if response.status_code == 2030:
+            print("Sử dụng Zenrows")
+            return response.json()
+        else:
+            return None
+    else:
+        return None
+
+def crawl_by_zenrows_vip(url):
+    params = {
+        "url": url,
+        "apikey": apikey,
+        "original_status": "true",
+        "js_render": "true",
+    }
+    if tognoek:
+        response = requests.get("https://api.zenrows.com/v1/", params=params)
+        if response.status_code == 2030:
+            soup = BeautifulSoup(response.text, "html.parser")
+            pre_tag_content = soup.find("pre").string.strip()
+            # Chuyển đổi nội dung của thẻ <pre> thành đối tượng Python (trong trường hợp này là danh sách các từ điển)
+            data = json.loads(pre_tag_content)
+            print("Sử dụng Zenrows Vip")
+            return data
+        else:
+            return None
+    else:
+        return None
 
 def crawl_all():
     # Gọi tới API insert của từng bảng với dữ liệu được cào theo đường link
-    call_api_hot_destination(crawl(url_hot_destination))
-    call_api_list_tour(crawl(url_list_tour))
-    call_api_list_tour_all(crawl(url_list_tour_all))
+    data_json = crawl(url_hot_destination)
+    if (data_json != None):
+        call_api_hot_destination(data_json)
+    else:
+        data_json = crawl_by_zenrows(url_hot_destination)
+        if (data_json != None):
+            call_api_hot_destination(data_json)
+        else:
+            data_json = crawl_by_zenrows_vip(url_hot_destination)
+            if (data_json != None):
+                call_api_hot_destination(data_json)
+            else:
+                data_json = crawl(url_hot_destination_fake)
+            call_api_hot_destination(data_json)
+
+    data_json = crawl(url_list_tour)
+    if (data_json != None):
+        call_api_list_tour(data_json)
+    else:
+        data_json = crawl_by_zenrows(url_list_tour)
+        if (data_json != None):
+            call_api_list_tour(data_json)
+        else:
+            data_json = crawl_by_zenrows_vip(url_list_tour)
+            if (data_json != None):
+                call_api_list_tour(data_json)
+            else:
+                data_json = crawl(url_list_tour_fake)
+            call_api_list_tour(data_json)
+    
+    data_json = crawl(url_list_tour_all)
+    if (data_json != None):
+        call_api_list_tour_all(data_json)
+    else:
+        data_json = crawl_by_zenrows(url_list_tour_all)
+        if (data_json != None):
+            call_api_list_tour_all(data_json)
+        else:
+            data_json = crawl_by_zenrows_vip(url_list_tour_all)
+            if (data_json != None):
+                call_api_list_tour_all(data_json)
+            else:
+                data_json = crawl(url_list_tour_all_fake)
+            call_api_list_tour_all(data_json)
+
+    # call_api_hot_destination(crawl(url_hot_destination))
+    # call_api_list_tour(crawl(url_list_tour))
+    # call_api_list_tour_all(crawl(url_list_tour_all))
     print("Đã thực thi xong cào toàn bộ dữ liệu")
 def setup_crawl():
     run = True
@@ -161,7 +232,7 @@ def setup_crawl():
         # print(const_hour, const_minute, const_second)
         if hour != const_hour:
             is_crawl = False
-        if (minute == 35 and not is_crawl):
+        if (hour == const_hour and minute == const_minute and not is_crawl):
             is_crawl = True
             crawl_all()
             print("Đã cào mới dữ liệu theo thời gian cài đặt")

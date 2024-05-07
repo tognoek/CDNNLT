@@ -1,11 +1,9 @@
 var searchInput = "tognoek"
 const urlApi = "http://localhost:7000"
-
-suggest = document.getElementById("suggest");
-
-hot_destination = document.getElementById("right-suggest");
-
-tours = document.getElementById("tours");
+var textSearch = "Đà Nẵng"
+var suggest = document.getElementById("suggest");
+var hot_destination = document.getElementById("right-suggest")
+var tours = document.getElementById("tours");
 
 function formatTime(chuoi) {
     var index = 0;
@@ -94,48 +92,87 @@ async function get_hot_destination() {
         throw error;
     }
 }
+
+function tao_item(stringSearch){
+    search(stringSearch)
+    .then(data => {
+        // console.log("Dữ liệu từ API:", data);
+        while (tours.firstChild) {
+            tours.removeChild(tours.firstChild);
+        }
+        while (suggest.firstChild) {
+            suggest.removeChild(suggest.firstChild);
+        }
+        for (let index = 0; index < data.length; index++) {
+            const li = document.createElement("li");
+            li.innerHTML = `
+            <div>
+                <div class="image">
+                    <img src="${data[index][5]}" alt="">
+                </div>
+                <div class="info">
+                    <div class="text1">${data[index][1]}</div>
+                    <div class="text2">Mã: ${data[index][8]}</div>
+                    <div class="text2">Thời gian: ${formatTime(data[index][8])}</div>
+                    <div class="text2">Khởi hành: ${data[index][7]}</div>
+                    <div class="text1">
+                    ${data[index][4] !== 2904 ? `<div>${formatMoney(data[index][4])}<sup>đ</sup></div>` : `<div>Chưa được cung cấp thông tin</div>`}
+                        <button class="button">
+                            <a href="${data[index][2]}">Xem chi tiết</a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            `;
+            tours.appendChild(li);
+        };
+        timKiem();
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+}
+function isUpperCase(character) {
+    return character === character.toUpperCase() &&
+           character !== character.toLowerCase() &&
+           isNaN(parseInt(character, 10));
+}
+function get_name_tour(params) {
+    params += " tognoek";
+    var tachTu = params.split(" ");
+    for (var t = 0; t < tachTu.length; t++) {
+        if (tachTu[t] == "lịch") {
+            var res = "";
+            for (var r = t + 1; r < tachTu.length; r++) {
+                if (isUpperCase(tachTu[r][0])) {
+                    res += tachTu[r] + " ";
+                }else{
+                    return res.trim();
+                }
+            }
+        }
+    }
+    return "Đà Nẵng"
+}
+function timKiem(){
+    var list_item = document.getElementsByClassName("item");
+    for (var i = 0; i < list_item.length; i++){
+        var btn_search = list_item[i].querySelector(".btn_search");
+        let textSearch = list_item[i].querySelector(".name").textContent;
+        btn_search.addEventListener("click", ()=>{
+            console.log(get_name_tour(textSearch));
+            tao_item(get_name_tour(textSearch));
+        });
+    };
+}
+
 document.getElementById("myForm").addEventListener("submit", function (event) {
     event.preventDefault(); // Ngăn chặn form gửi yêu cầu mặc định
     searchInput = document.getElementById("searchInput").value;
-    // Gọi API và xử lý dữ liệu
-    search(searchInput)
-        .then(data => {
-            // console.log("Dữ liệu từ API:", data);
-            while (tours.firstChild) {
-                tours.removeChild(tours.firstChild);
-            }
-            while (suggest.firstChild) {
-                suggest.removeChild(suggest.firstChild);
-            }
-            for (let index = 0; index < data.length; index++) {
-                const li = document.createElement("li");
-                li.innerHTML = `
-                <div>
-                    <div class="image">
-                        <img src="${data[index][5]}" alt="">
-                    </div>
-                    <div class="info">
-                        <div class="text1">${data[index][1]}</div>
-                        <div class="text2">Mã: ${data[index][8]}</div>
-                        <div class="text2">Thời gian: ${formatTime(data[index][8])}</div>
-                        <div class="text2">Khởi hành: ${data[index][7]}</div>
-                        <div class="text1">
-                        ${data[index][4] !== 2904 ? `<div>${formatMoney(data[index][4])}<sup>đ</sup></div>` : `<div>Chưa được cung cấp thông tin</div>`}
-                            <button class="button">
-                                <a href="${data[index][2]}">Xem chi tiết</a>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                `;
-                tours.appendChild(li);
-            };
-        })
-        .catch(error => {
-            console.error("Error:", error);
-        });
+    tao_item(searchInput)
+    
 });
-if (!hasParentTour(document.querySelector('.tours'))) {
+if (!hasParentTour(document.querySelector(".tours"))) {
     // console.log("Xin chao")
 }
 else {
@@ -149,11 +186,11 @@ else {
                 console.log(data[index]);
                 div.innerHTML = `
                     <img src="${data[index][2]}" alt="">
-                    <div>
-                        <p>${data[index][1]}</p>
+                    <div class = "item">
+                        <p class = "name">${data[index][1]}</p>
                        <div>
-                            <button class="button">
-                                <a href="#">Tìm kiếm</a>
+                            <button class="button btn_search">
+                                Tìm kiếm
                             </button>
                             <button class="button">
                                 <a href="${data[index][3]}">Xem chi tiết</a>
@@ -163,6 +200,7 @@ else {
                 `;
                 suggest.appendChild(div);
             }
+            timKiem();
         })
         .catch(error => {
             console.error("Error:", error);
@@ -176,11 +214,11 @@ get_hot_destination()
             console.log(data[index]);
             div.innerHTML = `
             <img src="${data[index][2]}" alt="">
-            <div>
-                <p>${data[index][3]}</p>
+            <div class = "item">
+                <p class = "name">${data[index][3]}</p>
                 <div>
-                    <button class="button">
-                        <a href="#">Tìm kiếm</a>
+                    <button class="button btn_search">
+                        Tìm kiếm
                     </button>
                     <button  class="button">
                         <a href="${data[index][4]}">Xem chi tiết</a>
@@ -189,6 +227,7 @@ get_hot_destination()
             `;
             hot_destination.appendChild(div);
         }
+        timKiem();
     })
     .catch(error => {
         console.error("Error:", error);
