@@ -6,6 +6,11 @@ from datetime import datetime
 import threading
 import configparser
 
+# Khởi tạo một đối tượng ConfigParser
+config = configparser.ConfigParser()
+# Đọc các giá trị từ file .conf
+config.read(".conf")
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -15,17 +20,26 @@ app.add_middleware(
     allow_headers=["*"],  # Có thể chỉ định danh sách các header cụ thể
 )
 
+tognoek = False
+
 url_real = "http://db_api:8000"
-url_hot_destination = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/hotdestination.json"
-url_list_tour = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/list_tour.json"
-url_list_tour_all = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/list_tour_all.json"
+if tognoek:
+    # Url real
+    url_hot_destination = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/hotdestination.json"
+    url_list_tour = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/list_tour.json"
+    url_list_tour_all = "https://www.vietnambooking.com/wp-content/uploads/data_json/tours/list_tour_all.json"
 
-# Khởi tạo một đối tượng ConfigParser
-config = configparser.ConfigParser()
+# key
+apikey = "f089459c644a010d87fbc5c9452db869e2fb250d"
 
-# Đọc các giá trị từ file .conf
-config.read(".conf")
+if not tognoek:
+    # api fake
+    url_hot_destination = "http://api_fake:8020/hot_destination"
+    url_list_tour = "http://api_fake:8020/list_tour"
+    url_list_tour_all = "http://api_fake:8020/list_tour_all"
 
+
+# Lấy thời gian cào dữ liệu
 const_hour = config.getint("setup_crawl", "const_hour")
 const_minute = config.getint("setup_crawl", "const_minute")
 const_second = config.getint("setup_crawl", "const_second")
@@ -37,6 +51,9 @@ async def crawl_now():
 
 def call_api_hot_destination(data):
     url = url_real + "/insert_data_hot_destination"
+    if data == None:
+        print("No data")
+        return
     for item in data:
         data_payload = {
         "id_post": item["id_post"],
@@ -51,11 +68,14 @@ def call_api_hot_destination(data):
         # Gửi yêu cầu POST đến API
         response = requests.post(url, json=data_payload)
         if response.status_code == 200:
-            print("Data inserted successfully!")
+            print("Gửi yêu cầu thành công")
         else:
-            print("Failed to insert data:", response.text)
+            print("Lỗi: ", response.text)
 def call_api_list_tour(data):
     url = url_real + "/insert_data_list_tour"
+    if data == None:
+        print("No data")
+        return
     for item in data:
         data_payload = {
             "id_post": item["id_post"],
@@ -69,15 +89,18 @@ def call_api_list_tour(data):
         try:
             # Gửi yêu cầu POST đến API
             response = requests.post(url, json=data_payload)
-            response.raise_for_status()  # Nếu có lỗi trong phản hồi, nó sẽ ném một ngoại lệ HTTPError
+            response.raise_for_status()  
             
             # In ra thông báo nếu thành công
-            print("Dữ liệu được chèn thành công!!")
+            print("Gửi yêu cầu thành công")
         except requests.HTTPError as e:
-            print("Lỗi trong khi chèn dữ liệu:", e)
+            print("Lỗi: ", e)
 
 def call_api_list_tour_all(data):
     url = url_real + "/insert_data_list_tour_all"
+    if data == None:
+        print("No data")
+        return
     for item in data:
         price = "2904"
         if item["price"] != "":
@@ -97,12 +120,12 @@ def call_api_list_tour_all(data):
         try:
             # Gửi yêu cầu POST đến API
             response = requests.post(url, json=data_payload)
-            response.raise_for_status()  # Nếu có lỗi trong phản hồi, nó sẽ ném một ngoại lệ HTTPError
+            response.raise_for_status()  
             
             # In ra thông báo nếu thành công
-            print("Dữ liệu được chèn thành công!")
+            print("Gửi yêu cầu thành công")
         except requests.HTTPError as e:
-            print("Lỗi trong khi chèn dữ liệu:", e)
+            print("Lỗi: ", e)
 
 
 def crawl(url):
@@ -112,6 +135,13 @@ def crawl(url):
         return json_data
     else:
         return None
+def crawl_by_zenrows(url):
+    params = {
+        "url": url,
+        "apikey": apikey,
+    }
+    response = requests.get("https://api.zenrows.com/v1/", params=params)
+    return response.json()
 
 def crawl_all():
     # Gọi tới API insert của từng bảng với dữ liệu được cào theo đường link
@@ -127,11 +157,11 @@ def setup_crawl():
         hour = current_time.hour
         minute = current_time.minute
         second = current_time.second
-        print(hour, minute, second)
-        print(const_hour, const_minute, const_second)
+        # print(hour, minute, second)
+        # print(const_hour, const_minute, const_second)
         if hour != const_hour:
             is_crawl = False
-        if (hour == const_hour and minute == const_minute and not is_crawl):
+        if (minute == 35 and not is_crawl):
             is_crawl = True
             crawl_all()
             print("Đã cào mới dữ liệu theo thời gian cài đặt")

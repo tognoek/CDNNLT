@@ -7,25 +7,51 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
+}
+#center{
+    flex: 2;
+    display: flex;
+    justify-content: center;
     flex-direction: column;
     align-items: center;
 }
+#left, #right{
+    flex: 1;
+}
 
-.container form {
-    width: 50%;
+#right{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+#right > p{
+    margin: 80px;
+    margin-bottom: 20px;
+    font-size: 26px;
+    padding-top: 10px;
+    /* margin-left: 10px; */
+    text-align: center;
+}
+
+#myForm{
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.container form input {
+#myForm input {
     height: 30px;
     width: 100%;
-    padding: 0 20px 0 20px;
+    /* padding: 0 20px 0 20px;  */
     border: 3px solid;
-    padding: 0.25em 0.5em;
+    text-indent: 20px;
+    padding: 0.25em 0em;
 }
 
-.container form button {
+#myForm button {
     margin-top: 10px;
     margin-left: auto;
     width: 20%;
@@ -44,21 +70,21 @@
     touch-action: manipulation;
 }
 
-.container form button:active {
+#myForm button:active {
     box-shadow: 0px 0px 0px 0px;
     top: 5px;
     left: 5px;
 }
-.container ul{
+#tours{
     list-style-type: none;
     padding-inline-start: 0px;
-    width: 50%;
+    width: 100%;
 }
-.container ul li{
+#tours li{
     margin-top: 30px;
 }
 
-.container ul li div {
+#tours li div {
     display: flex;
 }
 .image{
@@ -81,7 +107,7 @@
     flex-direction: column;
 }
 
-.info div button {
+.button{
     align-self: center;
     background-color: #fff;
     background-image: none;
@@ -112,16 +138,16 @@
     touch-action: manipulation;
 }
 
-.info div button:hover {
+.button:hover {
     box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
     transform: translate3d(0, 2px, 0);
 }
 
-.info div button:focus {
+.button:focus {
     box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
 
-.info div button a {
+.button a {
     color: inherit;
     text-decoration: none;
 }
@@ -145,4 +171,73 @@ sup{
 .info .text2{
     font-size: 18px;
     margin-top: 10px;
+}
+#suggest{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap; /* Cho phép các ô tự xuống dòng */
+    justify-content: space-between; /* Các ô căn ra hai bên */
+}
+.suggest > div{
+    width: calc(50% - 20px); 
+    margin-top: 30px;
+}
+.suggest > div{
+    display: flex;
+}
+
+.suggest div img{
+    width: 150px;
+    aspect-ratio: 1/1;
+    border: 3px solid black;
+}
+.suggest > div > div> p{
+    margin-top: 2px;
+    margin-left: 20px;
+    font-size: 23px;
+    color: rgb(12, 0, 121);
+}
+.suggest > div > div{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.suggest > div > div > div {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
+}
+#right-suggest{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-items: left;
+}
+
+#right-suggest > div{
+    margin-bottom: 40px;
+    display: flex;
+    margin-left: 20px;
+}
+#right-suggest div img{
+    border: 3px solid black;
+}
+#right-suggest > div > div> p{
+    margin-top: 2px;
+    margin-left: 20px;
+    font-size: 23px;
+    color: rgb(12, 0, 121);
+}
+#right-suggest > div > div{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+#right-suggest > div > div > div {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
 }

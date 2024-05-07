@@ -12,60 +12,126 @@
 
 <body>
     <div class="container">
-        <form action="" method="post" id="myForm">
-            <input type="text" id="searchInput" class="searchInput" name="searchInput1"
-                placeholder="Quốc gia, thành phố, địa điểm du lịch">
-            <br>
-            <button type="submit">Tìm kiếm</button>
-        </form>
-        <ul class="tours">
-            <!-- <li>
-                <div>
-                    <div class="image">
-                        <img src="default.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <div class="text1">
-                            Tour du lịch miền Bắc 5N4D | Hà Nội – Ninh Bình – Vịnh Hạ Long – Sapa
-                        </div>
-                        <div class="text2">Mã: 328H234IUYWER32</div>
-                        <div class="text2">Thời gian: 4 ngày 3 đêm</div>
-                        <div class="text2">Khởi hành: Hà Nội</div>
-                        <div class="text1">
-                            <div>6.000.000
-                                <sup>đ</sup>
-                            </div>
-                            <button>
+        <div id="left"></div>
+        <div id="center">
+            <form action="" method="post" id="myForm">
+                <input type="text" id="searchInput" class="searchInput" name="searchInput"
+                    placeholder="Quốc gia, thành phố, địa điểm du lịch">
+                <br>
+                <button type="submit">Tìm kiếm</button>
+            </form>
+            <div class="suggest" id="suggest">
+                <!-- <div>
+                    <img src="default.jpg" alt="">
+                    <div>
+                        <p>Tour du lịch Đà Nẵng</p>
+                        <div>
+                            <button class="button">
+                                <a href="#">Tìm kiếm</a>
+                            </button>
+                            <button class="button">
                                 <a href="#">Xem chi tiết</a>
                             </button>
                         </div>
                     </div>
-                </div>
-            </li>
-            <li>
-                <div>
-                    <div class="image">
-                        <img src="default2.jpg" alt="">
-                    </div>
-                    <div class="info">
-                        <div class="text1">
-                            Tour du lịch miền Bắc 5N4D | Hà Nội – Ninh Bình – Vịnh Hạ Long – Sapa
-                        </div>
-                        <div class="text2">Mã: 328H234IUYWER32</div>
-                        <div class="text2">Thời gian: 4 ngày 3 đêm</div>
-                        <div class="text2">Khởi hành: Hà Nội</div>
-                        <div class="text1">
-                            <div>6.000
-                                <sup>đ</sup>
-                            </div>
-                            <button>
+                </div> -->
+                <!-- <div>
+                    <img src="default3.jpg" alt="">
+                    <div>
+                        <p>Tour du lịch Đà Nẵng</p>
+                        <div>
+                            <button class="button">
+                                <a href="#">Tìm kiếm</a>
+                            </button>
+                            <button class="button">
                                 <a href="#">Xem chi tiết</a>
                             </button>
                         </div>
                     </div>
-                </div>
-            </li> -->
-        </ul>
+                </div> -->
+                <!-- <div>
+                    <img src="default3.jpg" alt="">
+                    <div>
+                        <p>Tour du lịch Đà Nẵng</p>
+                        <div>
+                            <button class="button">
+                                <a href="#">Tìm kiếm</a>
+                            </button>
+                            <button class="button">
+                                <a href="#">Xem chi tiết</a>
+                            </button>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <ul class="tours" id="tours">
+                <!-- <li>
+                    <div>
+                        <div class="image">
+                            <img src="default.jpg" alt="">
+                        </div>
+                        <div class="info">
+                            <div class="text1">
+                                Tour du lịch miền Bắc 5N4D | Hà Nội – Ninh Bình – Vịnh Hạ Long – Sapa
+                            </div>
+                            <div class="text2">Mã: 328H234IUYWER32</div>
+                            <div class="text2">Thời gian: 4 ngày 3 đêm</div>
+                            <div class="text2">Khởi hành: Hà Nội</div>
+                            <div class="text1">
+                                <div>6.000.000
+                                    <sup>đ</sup>
+                                </div>
+                                <button class="button">
+                                    <a href="#">Xem chi tiết</a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </li> -->
+                <!-- <li>
+                    <div>
+                        <div class="image">
+                            <img src="default.jpg" alt="">
+                        </div>
+                        <div class="info">
+                            <div class="text1">
+                                Tour du lịch miền Bắc 5N4D | Hà Nội – Ninh Bình – Vịnh Hạ Long – Sapa
+                            </div>
+                            <div class="text2">Mã: 328H234IUYWER32</div>
+                            <div class="text2">Thời gian: 4 ngày 3 đêm</div>
+                            <div class="text2">Khởi hành: Hà Nội</div>
+                            <div class="text1">
+                                <div>6.000.000
+                                    <sup>đ</sup>
+                                </div>
+                                <button class="button">
+                                    <a href="#">Xem chi tiết</a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </li> -->
+            </ul>
+        </div>
+        <div id="right">
+            <p>Các địa điểm được tìm kiếm nhiều nhất</p>
+            <div class="right-suggest" id="right-suggest">
+                <!-- <div>
+                    <img src="default3.jpg" alt="">
+                    <div>
+                        <p>Đặt tour du lịch Đà Lạt 2023 giá rẻ | Vietnam Booking</p>
+                        <div>
+                            <button class="button">
+                                <a href="#">Tìm kiếm</a>
+                            </button>
+                            <button  class="button">
+                                <a href="#">Xem chi tiết</a>
+                            </button>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>

@@ -24,46 +24,73 @@ cursor = conn.cursor()
 @app.post("/insert_data_hot_destination")
 async def insert_data(tour: HotDestination):
     try:
-        # Thực hiện truy vấn INSERT vào cơ sở dữ liệu
-        mysql = ("INSERT INTO hot_destination (id_post, tour_type_category, image, name, url, type, count) VALUES (%s, %s, %s, %s, %s, %s, %s)")
+        # Thực hiện truy vấn INSERT INTO ... ON DUPLICATE KEY UPDATE
+        mysql = ("INSERT INTO hot_destination (id_post, tour_type_category, image, name, url, type, count) "
+                 "VALUES (%s, %s, %s, %s, %s, %s, %s) "
+                 "ON DUPLICATE KEY UPDATE "
+                 "tour_type_category = VALUES(tour_type_category), "
+                 "image = VALUES(image), "
+                 "name = VALUES(name), "
+                 "url = VALUES(url), "
+                 "type = VALUES(type), "
+                 "count = VALUES(count)")
         cursor.execute(mysql, (tour.id_post, tour.tour_type_category, tour.image, tour.name, tour.url, tour.type, tour.count))
 
         # Lưu các thay đổi
         conn.commit()
         
-        return {"message": "Dữ liệu đã được chèn vào bảng hot_destination"}
+        print("Dữ liệu đã được chèn vào bảng hot_destination hoặc đã được cập nhật nếu đã tồn tại")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
 # API để chèn dữ liệu vào bảng list_tour
 @app.post("/insert_data_list_tour")
 async def insert_data_list_tour(tour: ListTour):
     try:
-        # Thực hiện truy vấn INSERT vào cơ sở dữ liệu
-        mysql = ("INSERT INTO list_tour (id_post, name, image, url, type, count) VALUES (%s, %s, %s, %s, %s, %s)")
+        # Thực hiện truy vấn INSERT INTO ... ON DUPLICATE KEY UPDATE
+        mysql = ("INSERT INTO list_tour (id_post, name, image, url, type, count) "
+                 "VALUES (%s, %s, %s, %s, %s, %s) "
+                 "ON DUPLICATE KEY UPDATE "
+                 "name = VALUES(name), "
+                 "image = VALUES(image), "
+                 "url = VALUES(url), "
+                 "type = VALUES(type), "
+                 "count = VALUES(count)")
         cursor.execute(mysql, (tour.id_post, tour.name, tour.image, tour.url, tour.type, tour.count))
 
         # Lưu các thay đổi
         conn.commit()
         
-        return {"message": "Dữ liệu đã được chèn vào bảng list_tour"}
+        print("Dữ liệu đã được chèn vào bảng list_tour hoặc đã được cập nhật nếu đã tồn tại")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 # API để chèn dữ liệu vào bảng list_tour_all
 @app.post("/insert_data_list_tour_all")
 async def insert_data_list_tour_all(tour: ListTourAll):
     try:
-        # Thực hiện truy vấn INSERT vào cơ sở dữ liệu
-        mysql = ("INSERT INTO list_tour_all (id_post, name, url, category, price, image, type, location, code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
+        # Thực hiện truy vấn INSERT INTO ... ON DUPLICATE KEY UPDATE
+        mysql = ("INSERT INTO list_tour_all (id_post, name, url, category, price, image, type, location, code) "
+                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) "
+                 "ON DUPLICATE KEY UPDATE "
+                 "name = VALUES(name), "
+                 "url = VALUES(url), "
+                 "category = VALUES(category), "
+                 "price = VALUES(price), "
+                 "image = VALUES(image), "
+                 "type = VALUES(type), "
+                 "location = VALUES(location), "
+                 "code = VALUES(code)")
         cursor.execute(mysql, (tour.id_post, tour.name, tour.url, tour.category, tour.price, tour.image, tour.type, tour.location, tour.code))
 
         # Lưu các thay đổi
         conn.commit()
         
-        return {"message": "Dữ liệu đã được chèn vào bảng list_tour_all"}
+        print("Dữ liệu đã được chèn vào bảng list_tour_all hoặc đã được cập nhật nếu đã tồn tại")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 # API để lấy tất cả dữ liệu từ bảng hot_destination
 @app.get("/get_all_data_hot_destination")
 async def get_all_data():

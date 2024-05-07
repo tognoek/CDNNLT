@@ -1,17 +1,12 @@
-import configparser
+# pip install requests
+import requests
 
-# Khởi tạo một đối tượng ConfigParser
-config = configparser.ConfigParser()
-
-# Đọc các giá trị từ file config.conf
-config.read(".conf")
-
-# Lấy các giá trị từ phần 'setup_crawl'
-const_hour = config.getint("setup_crawl", "const_hour")
-const_minute = config.getint("setup_crawl", "const_minute")
-const_second = config.getint("setup_crawl", "const_second")
-
-# In các giá trị để kiểm tra
-print("const_hour:", const_hour)
-print("const_minute:", const_minute)
-print("const_second:", const_second)
+url = 'https://www.vietnambooking.com/wp-content/uploads/data_json/tours/hotdestination.json'
+apikey = 'f089459c644a010d87fbc5c9452db869e2fb250d'
+params = {
+    'url': url,
+    'apikey': apikey,
+	'original_status': 'true',
+}
+response = requests.get('https://api.zenrows.com/v1/', params=params)
+print(response.text)
